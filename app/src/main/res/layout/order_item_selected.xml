@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b4555555"
+    android:clickable="true"
+    android:id="@+id/order_item_selected_layout">
+
+    <RelativeLayout
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="50%"
+        app:layout_marginTopPercent="25%"
+        app:layout_marginLeftPercent="25%"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:id="@+id/order_item_selected_layout_child">
+
+        <Button
+            android:text="Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_cancel"
+            android:layout_gravity="left"
+            android:background="@android:color/holo_red_light"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+
+        <Button
+            android:text="Add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_add"
+            android:layout_gravity="right"
+            android:background="@android:color/holo_green_light"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="2"
+            android:gravity="center"
+            android:id="@+id/order_item_selected_amount"
+            android:layout_centerInParent="true"/>
+
+        <Button
+            android:text="-"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_minus"
+            android:layout_toLeftOf="@id/order_item_selected_amount"
+            android:layout_centerInParent="true"/>
+
+        <Button
+            android:text="+"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_plus"
+            android:gravity="center"
+            android:layout_toRightOf="@id/order_item_selected_amount"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_label"/>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/order_item_selected_price"
+            android:layout_below="@id/order_item_selected_label"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+</android.support.percent.PercentFrameLayout>

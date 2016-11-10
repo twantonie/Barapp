@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Barapp</string>
+    <string name="order_menu">Order Menu</string>
+    <string name="configure_order_menu">Configure Order Menu</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="header_name">ERC\'69 Barapp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

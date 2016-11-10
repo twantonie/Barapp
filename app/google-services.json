@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "457081428336",
+    "firebase_url": "https://barapp-52af8.firebaseio.com",
+    "project_id": "barapp-52af8",
+    "storage_bucket": "barapp-52af8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457081428336:android:a9e3cab8a73bcd81",
+        "android_client_info": {
+          "package_name": "nl.erc69.barapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457081428336-2sfokcnq5pebliieduqe5lbj41m5l7v2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nl.erc69.barapp",
+            "certificate_hash": "FEBD99BD7EE154BD89F6F1B3BD45F89ABEDD0F64"
+          }
+        },
+        {
+          "client_id": "457081428336-17bmt7re9rslbcljn73i4lhlr1dlh4ue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmJpjDIkrpWyVGWq8Qi3YtMaUFgLAbxNE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457081428336-17bmt7re9rslbcljn73i4lhlr1dlh4ue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
