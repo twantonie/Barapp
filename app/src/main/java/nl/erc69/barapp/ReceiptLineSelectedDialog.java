@@ -2,19 +2,18 @@ package nl.erc69.barapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
 
-public class OrderItemSelectedDialog extends DialogFragment {
+public class ReceiptLineSelectedDialog extends DialogFragment {
     private Item item;
     private int orderAmount = 1;
-    private int categoryPosition;
-    private int itemPosition;
+    private int linePosition = -1;
     private NumberPicker mNumberPicker;
 
     @Override
@@ -23,12 +22,12 @@ public class OrderItemSelectedDialog extends DialogFragment {
 
         Bundle bundle = getArguments();
 
-        categoryPosition = bundle.getInt(Category.CATEGORY_POSITION);
-        itemPosition = bundle.getInt(Category.ITEM_POSITION);
+        int categoryPosition = bundle.getInt(Category.CATEGORY_POSITION);
+        int itemPosition = bundle.getInt(Category.ITEM_POSITION);
+        linePosition = bundle.getInt(Receipt.LINE_POSITION);
+        orderAmount = bundle.getInt(Receipt.ORDER_AMOUNT);
 
         item = Category.CATEGORIES.get(categoryPosition).ITEMS.get(itemPosition);
-
-
     }
 
     @NonNull
@@ -47,17 +46,18 @@ public class OrderItemSelectedDialog extends DialogFragment {
 
         builder.setView(view)
                 .setTitle(item.getName())
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         orderAmount = mNumberPicker.getValue();
-                        ((MainActivity) getActivity()).addLineReceipt(categoryPosition,itemPosition, orderAmount);
+                        ((MainActivity) getActivity()).updateLineReceipt(linePosition,orderAmount);
                         dismiss();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ((MainActivity) getActivity()).deleteLineReceipt(linePosition);
                         dismiss();
                     }
                 });

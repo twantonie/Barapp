@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class OrderReceipt extends Fragment {
 
     public Receipt currentReceipt = new Receipt();
-    public boolean listItemClicked = false;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,11 +38,8 @@ public class OrderReceipt extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!listItemClicked) {
-                    listItemClicked = true;
-                    Receipt.Line line = currentReceipt.LINES.get(position);
-                    ((MainActivity) getActivity()).orderItemSelected(line.getCategoryPosition(), line.getItemPosition(), position, line.getOrderAmount());
-                }
+                Receipt.Line line = currentReceipt.LINES.get(position);
+                ((MainActivity) getActivity()).orderItemSelected(line.getCategoryPosition(), line.getItemPosition(), position, line.getOrderAmount());
             }
         });
         listView.setAdapter(new ListItemAdapter());

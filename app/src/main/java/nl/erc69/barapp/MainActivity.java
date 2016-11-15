@@ -1,9 +1,7 @@
 package nl.erc69.barapp;
 
-import android.support.v4.app.DialogFragment;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -114,31 +112,18 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         fragment.setArguments(bundle);
         fragment.show(getSupportFragmentManager(),"dialog");
 
-        /*
-        Bundle bundle = lookupItemBundle(categoryPosition,itemPosition);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        OrderItemSelectedDialog fragment = new OrderItemSelectedDialog();
-        fragment.setArguments(bundle);
-        transaction.add(R.id.order_grid_fragment,fragment);
-        transaction.commit();*/
     }
 
     public void orderItemSelected(int categoryPosition,int itemPosition,int linePosition,int orderAmount){
         Bundle bundle = lookupItemBundle(categoryPosition,itemPosition);
         bundle.putInt(Receipt.ORDER_AMOUNT,orderAmount);
         bundle.putInt(Receipt.LINE_POSITION,linePosition);
-        deployOrderItemSelected(bundle);
+
+        ReceiptLineSelectedDialog fragment = new ReceiptLineSelectedDialog();
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(),"dialog");
     }
 
-    private void deployOrderItemSelected(Bundle bundle){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        OrderItemSelected fragment = new OrderItemSelected();
-        fragment.setArguments(bundle);
-        transaction.add(R.id.order_grid_fragment,fragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     public void addLineReceipt(int categoryPosition,int itemPosition,int orderAmount){
         OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
@@ -165,11 +150,6 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     public void deleteLineReceipt(int linePosition){
         OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
         orderReceipt.deleteLineReceipt(linePosition);
-    }
-
-    public void listItemUnClicked(){
-        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
-        orderReceipt.listItemClicked = false;
     }
 
     private Bundle lookupItemBundle(int categoryPosition, int itemPosition){
