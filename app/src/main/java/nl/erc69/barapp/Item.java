@@ -3,8 +3,8 @@ package nl.erc69.barapp;
 
 
 public class Item {
-    private final String mName;
-    private final double mPrice;
+    private String mName;
+    private double mPrice;
     private int mInStock;
 
     Item(String name,Double price){
@@ -14,7 +14,11 @@ public class Item {
 
     public String getName(){return mName;}
 
+    public void setName(String name){mName = name;}
+
     public Double getPrice(){return mPrice;}
+
+    public void setPrice(double price){mPrice = price;}
 
     public boolean soldItem(int amount){
         if(amount>mInStock) {

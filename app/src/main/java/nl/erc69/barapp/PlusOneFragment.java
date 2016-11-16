@@ -13,16 +13,11 @@ import com.google.android.gms.plus.PlusOneButton;
 
 public class PlusOneFragment extends Fragment {
 
-    private static final String ARG_CATEGORY_NUMBER = "categoryNumer";
+    private static final String ARG_CATEGORY_NUMBER = "categoryNumber";
 
     private int categoryNumber;
 
     private OnFragmentInteractionListener mListener;
-
-    public PlusOneFragment() {
-        // Required empty public constructor
-    }
-
 
     public static PlusOneFragment newInstance(int categoryNumber) {
         PlusOneFragment fragment = new PlusOneFragment();
@@ -60,7 +55,7 @@ public class PlusOneFragment extends Fragment {
 
     public void buttonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(categoryNumber);
+            mListener.addCategory(categoryNumber);
         }
     }
 
@@ -82,7 +77,7 @@ public class PlusOneFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int categoryNumber);
+        void addCategory(int categoryNumber);
     }
 
 }

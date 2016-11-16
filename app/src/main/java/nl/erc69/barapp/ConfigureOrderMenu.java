@@ -1,21 +1,17 @@
 package nl.erc69.barapp;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ConfigureOrderMenu extends Fragment {
 
 
@@ -29,11 +25,9 @@ public class ConfigureOrderMenu extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mViewPager.setAdapter(new CategoryTab(this.getChildFragmentManager()));
 
-        // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
     }
@@ -43,7 +37,7 @@ public class ConfigureOrderMenu extends Fragment {
         categoryTab.notifyDataSetChanged();
     }
 
-    public class CategoryTab extends FragmentPagerAdapter {
+    public class CategoryTab extends FragmentStatePagerAdapter{
 
         public CategoryTab(FragmentManager fm) {
             super(fm);
@@ -57,14 +51,18 @@ public class ConfigureOrderMenu extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position<Category.CATEGORIES.size())
-                return OrderGridFragment.newInstance(position);
+                return ConfigureOrderGridFragment.newInstance(position);
             else
                 return PlusOneFragment.newInstance(position);
         }
 
         @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
         public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
             if (position<Category.CATEGORIES.size())
                 return Category.CATEGORIES.get(position).getName();
             else

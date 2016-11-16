@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private String DIALOG = "dialog";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         Bundle bundle = lookupItemBundle(categoryPosition,itemPosition);
         OrderItemSelectedDialog fragment = new OrderItemSelectedDialog();
         fragment.setArguments(bundle);
-        fragment.show(getSupportFragmentManager(),"dialog");
+        fragment.show(getSupportFragmentManager(),DIALOG);
 
     }
 
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
         ReceiptLineSelectedDialog fragment = new ReceiptLineSelectedDialog();
         fragment.setArguments(bundle);
-        fragment.show(getSupportFragmentManager(),"dialog");
+        fragment.show(getSupportFragmentManager(),DIALOG);
     }
 
 
@@ -159,10 +161,40 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         return bundle;
     }
 
-
-    public void onFragmentInteraction(int categoryNumber) {
+    public void updateCategory(int categoryPosition){
 
     }
+
+    public void addCategory(int categoryPosition) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Category.CATEGORY_POSITION,categoryPosition);
+        DialogAddCategory fragment = new DialogAddCategory();
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(),DIALOG);
+    }
+
+    public void updateItem(int categoryPosition,int itemPosition){
+        DialogUpdateItem fragment = new DialogUpdateItem();
+        fragment.setArguments(lookupItemBundle(categoryPosition,itemPosition));
+        fragment.show(getSupportFragmentManager(),DIALOG);
+    }
+
+    public void addItem(int categoryPosition,int itemPosition){
+        DialogAddItem fragment = new DialogAddItem();
+        fragment.setArguments(lookupItemBundle(categoryPosition,itemPosition));
+        fragment.show(getSupportFragmentManager(),DIALOG);
+    }
+
+
+    public void configureOrderMenuDataSetChanged(){
+        ConfigureOrderMenu orderReceipt = (ConfigureOrderMenu) getSupportFragmentManager().findFragmentById(R.id.order_grid_fragment);
+        orderReceipt.dataSetChanged();
+    }
+
+
+
+
+
 
 
 

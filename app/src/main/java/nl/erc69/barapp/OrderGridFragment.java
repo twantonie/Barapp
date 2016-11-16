@@ -1,5 +1,6 @@
 package nl.erc69.barapp;
 
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
-public class OrderGridFragment extends android.support.v4.app.Fragment {
+public class OrderGridFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mCategory;
@@ -43,10 +44,10 @@ public class OrderGridFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
-    public class OrderItemAdapter extends BaseAdapter {
+    private class OrderItemAdapter extends BaseAdapter {
         private Context mContext;
 
-        public OrderItemAdapter(Context c) {
+        private OrderItemAdapter(Context c) {
             mContext = c;
         }
 

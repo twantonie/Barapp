@@ -40,7 +40,7 @@ public class LaunchActivity extends AppCompatActivity {
                 for (DataSnapshot categoriesSnapshot: dataSnapshot.getChildren()){
                     Category.CATEGORIES.add(new Category((String) categoriesSnapshot.child("Name").getValue()));
                     for (DataSnapshot itemsSnapshot: categoriesSnapshot.child("Items").getChildren()){
-                        Category.CATEGORIES.get(i).addItem((String) itemsSnapshot.child("Name").getValue(),(double) itemsSnapshot.child("Price").getValue());
+                        Category.CATEGORIES.get(i).addItem((String) itemsSnapshot.child("Name").getValue(),checkPrice(itemsSnapshot.child("Price").getValue()));
                     }
                     i++;
                 }
@@ -69,5 +69,13 @@ public class LaunchActivity extends AppCompatActivity {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    private double checkPrice(Object price){
+        if (price instanceof Long)
+            return ((Long) price).doubleValue();
+        else
+            return (double) price;
+
     }
 }

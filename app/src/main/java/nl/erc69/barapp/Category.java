@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Category {
 
-    private final String mName;
+    private String mName;
     public static final String CATEGORY_POSITION = "categoryPosition";
     public static final String ITEM_POSITION = "itemPosition";
 
@@ -21,5 +21,7 @@ public class Category {
         Item newItem = new Item(name,price);
         ITEMS.add(newItem);
     }
+
+    public void setName(String name){mName = name;}
 
 }
