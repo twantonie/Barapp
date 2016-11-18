@@ -69,9 +69,12 @@ public class DialogAddCategory extends DialogFragment {
     private void editDatabase(String string){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabase.child("Categories").child(String.valueOf(mCategoryPosition)).child("Name").setValue(string);
+        String id = mDatabase.child(Category.CATEGORIES).push().getKey();
 
-        Category.CATEGORIES.add(new Category(string));
+        Category category = new Category(string,id,mCategoryPosition);
+
+        Category.newCategory(category);
+        mDatabase.child(Category.CATEGORIES).child(id).setValue(category);
 
         ((MainActivity)getActivity()).configureOrderMenuDataSetChanged();
     }

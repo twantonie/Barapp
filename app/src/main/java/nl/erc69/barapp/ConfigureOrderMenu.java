@@ -45,12 +45,12 @@ public class ConfigureOrderMenu extends Fragment {
 
         @Override
         public int getCount() {
-            return Category.CATEGORIES.size() + 1;
+            return Category.CATEGORIES_POS.size() + 1;
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position<Category.CATEGORIES.size())
+            if (position<Category.CATEGORIES_POS.size())
                 return ConfigureOrderGridFragment.newInstance(position);
             else
                 return PlusOneFragment.newInstance(position);
@@ -63,8 +63,8 @@ public class ConfigureOrderMenu extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position<Category.CATEGORIES.size())
-                return Category.CATEGORIES.get(position).getName();
+            if (position<Category.CATEGORIES_POS.size())
+                return Category.CATEGORIES_POS.get(position).getName();
             else
                 return "New Category";
         }

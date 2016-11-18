@@ -3,31 +3,39 @@ package nl.erc69.barapp;
 
 
 public class Item {
-    private String mName;
-    private double mPrice;
-    private int mInStock;
+    private String name;
+    private String id;
+    private int position;
+    private double price;
 
-    Item(String name,Double price){
-        mName = name;
-        mPrice = price;
+    Item(){
+        //Empty constructor for Firebase
     }
 
-    public String getName(){return mName;}
-
-    public void setName(String name){mName = name;}
-
-    public Double getPrice(){return mPrice;}
-
-    public void setPrice(double price){mPrice = price;}
-
-    public boolean soldItem(int amount){
-        if(amount>mInStock) {
-            mInStock = 0;
-            return false;
-        }
-        mInStock = mInStock-amount;
-        return true;
+    Item(String mName,String mId,int mPosition,Double mPrice){
+        name = mName;
+        id = mId;
+        position = mPosition;
+        price = mPrice;
     }
 
-    public int getInStock(){return mInStock;}
+    public String getName(){return name;}
+
+    public void setName(String mName){
+        name = mName;}
+
+    public Double getPrice(){return price;}
+
+    public void setPrice(double mprice){
+        price = mprice;}
+
+    public String getId(){
+        return id;
+    }
+
+    public int getPosition(){
+        return position;
+    }
+
+
 }

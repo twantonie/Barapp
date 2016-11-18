@@ -75,12 +75,13 @@ public class DialogAddItem extends DialogFragment {
     }
 
     private void addItem(String name,double price){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Categories").child(String.valueOf(mCategoryPosition)).child("Items").child(String.valueOf(mItemPosition));
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS);
+        String id = mDatabase.push().getKey();
 
-        mDatabase.child("Name").setValue(name);
-        mDatabase.child("Price").setValue(price);
+        Item item = new Item(name,id,mItemPosition,price);
 
-        Category.CATEGORIES.get(mCategoryPosition).ITEMS.add(new Item(name,price));
+        Category.CATEGORIES_POS.get(mCategoryPosition).addItem(item);
+        mDatabase.child(id).setValue(item);
 
         ((MainActivity)getActivity()).configureOrderMenuDataSetChanged();
     }

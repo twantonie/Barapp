@@ -1,27 +1,63 @@
 package nl.erc69.barapp;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Category {
 
-    private String mName;
+    private String name;
+    private String id;
+    private int position;
+
+    public static final String CATEGORIES = "Categories";
+    public static final String ITEMS = "Items";
     public static final String CATEGORY_POSITION = "categoryPosition";
     public static final String ITEM_POSITION = "itemPosition";
 
-    public final ArrayList<Item> ITEMS = new ArrayList<Item>();
-    public static ArrayList<Category> CATEGORIES = new ArrayList<Category>();
+    public static final HashMap<Integer,Category> CATEGORIES_POS = new HashMap<Integer, Category>();
+    public static final HashMap<String,Category> CATEGORIES_ID = new HashMap<String, Category>();
 
-    Category(String name){
-        mName = name;
+    public final HashMap<Integer,Item> ITEMS_POS = new HashMap<Integer, Item>();
+    public final HashMap<String,Item> ITEMS_ID = new HashMap<String, Item>();
+
+    public static void newCategory(Category category){
+        CATEGORIES_POS.put(category.getPosition(),category);
+        CATEGORIES_ID.put(category.getId(),category);
     }
 
-    public String getName(){return mName;}
-
-    public void addItem(String name,Double price){
-        Item newItem = new Item(name,price);
-        ITEMS.add(newItem);
+    public static void clear(){
+        CATEGORIES_POS.clear();
+        CATEGORIES_POS.clear();
     }
 
-    public void setName(String name){mName = name;}
+    public void addItem(Item item){
+        ITEMS_POS.put(item.getPosition(),item);
+        ITEMS_ID.put(item.getId(),item);
+    }
+
+    public void removeItem(int mPosition){
+        String mId = ITEMS_POS.get(mPosition).getId();
+        ITEMS_POS.remove(mPosition);
+        ITEMS_ID.remove(mId);
+    }
+
+    Category(){
+        //Empty constructor for Firebase
+    }
+
+    Category(String name,String id,int position){
+        this.name = name;
+        this.id = id;
+        this.position = position;
+    }
+
+    public String getName(){return name;}
+
+    public String getId(){return id;}
+
+    public int getPosition(){return position;}
+
+    public void setName(String mName){name = mName;}
+
+    public void setPosition(int mPosition){position=mPosition;}
 
 }

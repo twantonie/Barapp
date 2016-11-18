@@ -26,7 +26,7 @@ public class OrderItemSelectedDialog extends DialogFragment {
         categoryPosition = bundle.getInt(Category.CATEGORY_POSITION);
         itemPosition = bundle.getInt(Category.ITEM_POSITION);
 
-        item = Category.CATEGORIES.get(categoryPosition).ITEMS.get(itemPosition);
+        item = Category.CATEGORIES_POS.get(categoryPosition).ITEMS_POS.get(itemPosition);
 
 
     }

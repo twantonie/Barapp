@@ -52,11 +52,11 @@ public class OrderGridFragment extends Fragment {
         }
 
         public int getCount() {
-            return Category.CATEGORIES.get(mCategory).ITEMS.size();
+            return Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.size();
         }
 
         public Item getItem(int position) {
-            return Category.CATEGORIES.get(mCategory).ITEMS.get(position);
+            return Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.get(position);
         }
 
         public long getItemId(int position) {

@@ -38,7 +38,7 @@ public class ConfigureOrderGridFragment extends Fragment {
         GridView gridView = (GridView) view.findViewById(R.id.order_grid);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id){
-                if (position < Category.CATEGORIES.get(mCategory).ITEMS.size()) {
+                if (position < Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.size()) {
                     System.out.print("Update button pressed");
                     ((MainActivity) getActivity()).updateItem(mCategory, position);
                 }else {
@@ -60,11 +60,11 @@ public class ConfigureOrderGridFragment extends Fragment {
         }
 
         public int getCount() {
-            return Category.CATEGORIES.get(mCategory).ITEMS.size() + 1;
+            return Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.size() + 1;
         }
 
         public Item getItem(int position) {
-            return Category.CATEGORIES.get(mCategory).ITEMS.get(position);
+            return Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.get(position);
         }
 
         public long getItemId(int position) {
@@ -73,7 +73,7 @@ public class ConfigureOrderGridFragment extends Fragment {
 
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View view, ViewGroup viewGroup) {
-            if (position < Category.CATEGORIES.get(mCategory).ITEMS.size()) {
+            if (position < Category.CATEGORIES_POS.get(mCategory).ITEMS_POS.size()) {
                 if (view == null) {
                     view = getActivity().getLayoutInflater().inflate(R.layout.order_grid_item, viewGroup, false);
                 }

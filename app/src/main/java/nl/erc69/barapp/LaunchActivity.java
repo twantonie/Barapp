@@ -32,17 +32,18 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void createOrderItems(){
-        FirebaseDatabase.getInstance().getReference().child("Categories").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Category.CATEGORIES.clear();
-                int i = 0;
+                Category.clear();
+                String id;
                 for (DataSnapshot categoriesSnapshot: dataSnapshot.getChildren()){
-                    Category.CATEGORIES.add(new Category((String) categoriesSnapshot.child("Name").getValue()));
-                    for (DataSnapshot itemsSnapshot: categoriesSnapshot.child("Items").getChildren()){
-                        Category.CATEGORIES.get(i).addItem((String) itemsSnapshot.child("Name").getValue(),checkPrice(itemsSnapshot.child("Price").getValue()));
+                    Category category = categoriesSnapshot.getValue(Category.class);
+                    id = category.getId();
+                    Category.newCategory(category);
+                    for (DataSnapshot itemsSnapshot: categoriesSnapshot.child(Category.ITEMS).getChildren()){
+                        Category.CATEGORIES_ID.get(id).addItem(itemsSnapshot.getValue(Item.class));
                     }
-                    i++;
                 }
                 hideProgressDialog();
                 startActivity(new Intent(LaunchActivity.this,MainActivity.class));

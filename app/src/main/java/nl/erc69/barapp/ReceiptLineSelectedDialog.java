@@ -27,7 +27,7 @@ public class ReceiptLineSelectedDialog extends DialogFragment {
         linePosition = bundle.getInt(Receipt.LINE_POSITION);
         orderAmount = bundle.getInt(Receipt.ORDER_AMOUNT);
 
-        item = Category.CATEGORIES.get(categoryPosition).ITEMS.get(itemPosition);
+        item = Category.CATEGORIES_POS.get(categoryPosition).ITEMS_POS.get(itemPosition);
     }
 
     @NonNull

@@ -63,7 +63,7 @@ public class OrderMenu extends Fragment {
 
         @Override
         public int getCount() {
-            return Category.CATEGORIES.size();
+            return Category.CATEGORIES_POS.size();
         }
 
         @Override
@@ -74,7 +74,7 @@ public class OrderMenu extends Fragment {
         @Override
         public CharSequence getPageTitle(int position) {
             // Generate title based on item position
-            return Category.CATEGORIES.get(position).getName();
+            return Category.CATEGORIES_POS.get(position).getName();
         }
     }
 

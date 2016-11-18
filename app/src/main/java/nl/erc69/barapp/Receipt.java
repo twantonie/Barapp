@@ -50,7 +50,7 @@ public class Receipt {
             orderAmount = mOrderAmount;
         }
 
-        public Item getItem(){return Category.CATEGORIES.get(categoryPosition).ITEMS.get(itemPosition);}
+        public Item getItem(){return Category.CATEGORIES_POS.get(categoryPosition).ITEMS_POS.get(itemPosition);}
 
         public int getOrderAmount(){return orderAmount;}
 
