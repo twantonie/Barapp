@@ -1,5 +1,8 @@
 package nl.erc69.barapp;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 
 public class Category {
@@ -8,10 +11,11 @@ public class Category {
     private String id;
     private int position;
 
-    public static final String CATEGORIES = "Categories";
-    public static final String ITEMS = "Items";
+    public static final String CATEGORIES_FB = "Categories";
+    public static final String ITEMS_FB = "Items";
     public static final String CATEGORY_POSITION = "categoryPosition";
     public static final String ITEM_POSITION = "itemPosition";
+    public static final String POSITION = "position";
 
     public static final HashMap<Integer,Category> CATEGORIES_POS = new HashMap<Integer, Category>();
     public static final HashMap<String,Category> CATEGORIES_ID = new HashMap<String, Category>();
@@ -35,9 +39,25 @@ public class Category {
     }
 
     public void removeItem(int mPosition){
-        String mId = ITEMS_POS.get(mPosition).getId();
-        ITEMS_POS.remove(mPosition);
-        ITEMS_ID.remove(mId);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(CATEGORIES_FB).child(id).child(ITEMS_FB);
+        Item item = ITEMS_POS.get(mPosition);
+        int maxPosition = (ITEMS_POS.size()-1);
+
+        if (mPosition < maxPosition) {
+            Item iterate;
+            for (int i=mPosition;i<maxPosition;i++){
+                iterate = ITEMS_POS.get(i+1);
+                iterate.setPosition(i);
+                mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                ITEMS_POS.remove(i);
+                ITEMS_POS.put(i,iterate);
+            }
+        }
+
+        ITEMS_POS.remove(maxPosition);
+        ITEMS_ID.remove(item.getId());
+        mDatabase.child(item.getId()).removeValue();
+
     }
 
     Category(){

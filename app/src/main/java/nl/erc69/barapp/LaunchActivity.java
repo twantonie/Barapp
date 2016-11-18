@@ -32,7 +32,7 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void createOrderItems(){
-        FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Category.clear();
@@ -41,7 +41,7 @@ public class LaunchActivity extends AppCompatActivity {
                     Category category = categoriesSnapshot.getValue(Category.class);
                     id = category.getId();
                     Category.newCategory(category);
-                    for (DataSnapshot itemsSnapshot: categoriesSnapshot.child(Category.ITEMS).getChildren()){
+                    for (DataSnapshot itemsSnapshot: categoriesSnapshot.child(Category.ITEMS_FB).getChildren()){
                         Category.CATEGORIES_ID.get(id).addItem(itemsSnapshot.getValue(Item.class));
                     }
                 }

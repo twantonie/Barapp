@@ -75,7 +75,7 @@ public class DialogAddItem extends DialogFragment {
     }
 
     private void addItem(String name,double price){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS_FB);
         String id = mDatabase.push().getKey();
 
         Item item = new Item(name,id,mItemPosition,price);

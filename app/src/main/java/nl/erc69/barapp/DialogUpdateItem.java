@@ -36,7 +36,7 @@ public class DialogUpdateItem extends DialogFragment {
         mItemPosition = bundle.getInt(Category.ITEM_POSITION);
 
         item = Category.CATEGORIES_POS.get(mCategoryPosition).ITEMS_POS.get(mItemPosition);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS).child(item.getId());
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS_FB).child(item.getId());
     }
 
     @NonNull
@@ -104,8 +104,6 @@ public class DialogUpdateItem extends DialogFragment {
     }
 
     private void deleteItem(){
-        mDatabase.removeValue();
-
         Category.CATEGORIES_POS.get(mCategoryPosition).removeItem(mItemPosition);
 
         ((MainActivity)getActivity()).configureOrderMenuDataSetChanged();

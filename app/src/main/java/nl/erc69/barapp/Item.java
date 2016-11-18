@@ -37,5 +37,7 @@ public class Item {
         return position;
     }
 
+    public void setPosition(int position) {this.position = position;}
+
 
 }
