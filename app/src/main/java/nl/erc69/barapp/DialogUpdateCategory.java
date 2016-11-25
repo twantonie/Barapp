@@ -9,11 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 
 public class DialogUpdateCategory extends DialogFragment {
@@ -22,6 +26,7 @@ public class DialogUpdateCategory extends DialogFragment {
     private Category mCategory;
 
     private EditText ETName;
+    private Spinner spinner;
 
     DatabaseReference mDatabase;
 
@@ -49,6 +54,10 @@ public class DialogUpdateCategory extends DialogFragment {
         ETName = (EditText) view.findViewById(R.id.update_category_name);
         ETName.setText(mCategory.getName());
 
+        spinner = (Spinner) view.findViewById(R.id.dialog_category_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,populateSpinner());
+        spinner.setAdapter(adapter);
+        spinner.setSelection(mCategoryPosition);
 
         String title = "Update " + mCategory.getName();
 
@@ -64,6 +73,7 @@ public class DialogUpdateCategory extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         checkEditText();
+                        checkSpinner();
                         dismiss();
                     }
                 })
@@ -89,6 +99,15 @@ public class DialogUpdateCategory extends DialogFragment {
         dataSetChanged();
     }
 
+    private void checkSpinner(){
+        int newPosition = spinner.getSelectedItemPosition();
+        if (mCategoryPosition != newPosition){
+            Category.setCategoryPosition(newPosition,mCategoryPosition);
+
+            dataSetChanged();
+        }
+    }
+
 
     private void deleteCategory(){
         Category.removeCategory(mCategoryPosition);
@@ -98,5 +117,13 @@ public class DialogUpdateCategory extends DialogFragment {
 
     private void dataSetChanged(){
         ((MainActivity)getActivity()).configureOrderMenuDataSetChanged();
+    }
+
+    private ArrayList<String> populateSpinner(){
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (int i=0;i<Category.CATEGORIES_POS.size();i++){
+            arrayList.add(String.valueOf(i+1));
+        }
+        return arrayList;
     }
 }

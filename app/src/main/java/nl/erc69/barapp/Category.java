@@ -54,6 +54,38 @@ public class Category {
         CATEGORIES_POS.clear();
     }
 
+    public static void setCategoryPosition(int newPosition,int oldPosition){
+        if (oldPosition != newPosition) {
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(CATEGORIES_FB);
+            Category category = CATEGORIES_POS.get(oldPosition);
+
+            Category iterate;
+            if (oldPosition < newPosition){
+                for (int i=oldPosition;i<newPosition;i++){
+                    iterate = CATEGORIES_POS.get(i+1);
+                    iterate.setPosition(i);
+                    mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                    CATEGORIES_POS.remove(i);
+                    CATEGORIES_POS.put(i,iterate);
+                }
+            } else{
+                for (int i=oldPosition;i>newPosition;i--){
+                    iterate = CATEGORIES_POS.get(i-1);
+                    iterate.setPosition(i);
+                    mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                    CATEGORIES_POS.remove(i);
+                    CATEGORIES_POS.put(i,iterate);
+                }
+            }
+
+            category.setPosition(newPosition);
+            mDatabase.child(category.getId()).child(POSITION).setValue(newPosition);
+            CATEGORIES_POS.remove(newPosition);
+            CATEGORIES_POS.put(newPosition,category);
+
+        }
+    }
+
     public void addItem(Item item){
         ITEMS_POS.put(item.getPosition(),item);
         ITEMS_ID.put(item.getId(),item);
@@ -81,6 +113,38 @@ public class Category {
 
     }
 
+    public void setItemPosition(int newPosition,int oldPosition){
+        if (oldPosition != newPosition) {
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(CATEGORIES_FB).child(id).child(ITEMS_FB);
+            Item item = ITEMS_POS.get(oldPosition);
+
+            Item iterate;
+            if (oldPosition < newPosition){
+                for (int i=oldPosition;i<newPosition;i++){
+                    iterate = ITEMS_POS.get(i+1);
+                    iterate.setPosition(i);
+                    mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                    ITEMS_POS.remove(i);
+                    ITEMS_POS.put(i,iterate);
+                }
+            } else{
+                for (int i=oldPosition;i>newPosition;i--){
+                    iterate = ITEMS_POS.get(i-1);
+                    iterate.setPosition(i);
+                    mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                    ITEMS_POS.remove(i);
+                    ITEMS_POS.put(i,iterate);
+                }
+            }
+
+            item.setPosition(newPosition);
+            mDatabase.child(item.getId()).child(POSITION).setValue(newPosition);
+            ITEMS_POS.remove(newPosition);
+            ITEMS_POS.put(newPosition,item);
+
+        }
+    }
+
     Category(){
         //Empty constructor for Firebase
     }
@@ -99,6 +163,6 @@ public class Category {
 
     public void setName(String mName){name = mName;}
 
-    public void setPosition(int mPosition){position=mPosition;}
+    public void setPosition(int newPosition){position=newPosition;}
 
 }
