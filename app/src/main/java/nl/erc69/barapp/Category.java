@@ -28,6 +28,27 @@ public class Category {
         CATEGORIES_ID.put(category.getId(),category);
     }
 
+    public static void removeCategory(int mPosition){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(CATEGORIES_FB);
+        Category category = CATEGORIES_POS.get(mPosition);
+        int maxPosition = (CATEGORIES_POS.size()-1);
+
+        if (mPosition < maxPosition){
+            Category iterate;
+            for (int i=mPosition;i<maxPosition;i++){
+                iterate = CATEGORIES_POS.get(i+1);
+                iterate.setPosition(i);
+                mDatabase.child(iterate.getId()).child(POSITION).setValue(i);
+                CATEGORIES_POS.remove(i);
+                CATEGORIES_POS.put(i,iterate);
+            }
+        }
+
+        CATEGORIES_POS.remove(maxPosition);
+        CATEGORIES_ID.remove(category.getId());
+        mDatabase.child(category.getId()).removeValue();
+    }
+
     public static void clear(){
         CATEGORIES_POS.clear();
         CATEGORIES_POS.clear();

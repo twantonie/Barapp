@@ -6,11 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 
@@ -23,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String DIALOG = "dialog";
+
+    private boolean editCategory = false;
 
 
     @Override
@@ -74,9 +79,34 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (editCategory){
+            MenuItem menuItem = menu.add(0,R.id.menu_update_category,0,R.string.menu_update_category);
+            menuItem.setIcon(R.drawable.ic_edit);
+
+            MenuItemCompat.setShowAsAction(menuItem,MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        } else {
+            switch (item.getItemId()) {
+                case R.id.menu_update_category:
+                    int categoryPosition = ((ConfigureOrderMenu)getSupportFragmentManager().findFragmentById(R.id.order_grid_fragment)).getCurrentCategory();
+                    updateCategory(categoryPosition);
+                    return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -86,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         // Create a new fragment and specify the planet to show based on position
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
+        editCategory = false;
 
         switch (menuItem.getItemId()){
             case R.id.nav_first_fragment:
@@ -93,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
                 break;
             case R.id.nav_second_fragment:
                 fragment = new ConfigureOrderMenu();
+                editCategory = true;
                 break;
             default:
                 fragment = new OrderMenu();
@@ -106,6 +138,15 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
+        invalidateOptionsMenu();
+    }
+
+    private void addEditButton(){
+        Menu menu = mToolbar.getMenu();
+        MenuItem menuItem = menu.add(0,R.id.menu_update_category,0,R.string.menu_update_category);
+        menuItem.setIcon(R.drawable.ic_edit);
+
+        MenuItemCompat.setShowAsAction(menuItem,MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
     }
 
     public void orderItemSelected(int categoryPosition,int itemPosition){
@@ -162,7 +203,11 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     }
 
     public void updateCategory(int categoryPosition){
-
+        Bundle bundle = new Bundle();
+        bundle.putInt(Category.CATEGORY_POSITION,categoryPosition);
+        DialogUpdateCategory fragment = new DialogUpdateCategory();
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(),DIALOG);
     }
 
     public void addCategory(int categoryPosition) {
@@ -187,17 +232,8 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
 
     public void configureOrderMenuDataSetChanged(){
-        ConfigureOrderMenu orderReceipt = (ConfigureOrderMenu) getSupportFragmentManager().findFragmentById(R.id.order_grid_fragment);
-        orderReceipt.dataSetChanged();
+        ((ConfigureOrderMenu) getSupportFragmentManager().findFragmentById(R.id.order_grid_fragment)).dataSetChanged();
     }
-
-
-
-
-
-
-
-
 
 
 }

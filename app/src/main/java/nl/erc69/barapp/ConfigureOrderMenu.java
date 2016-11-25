@@ -6,8 +6,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,6 +20,7 @@ public class ConfigureOrderMenu extends Fragment {
 
 
     private ViewPager mViewPager;
+    private TabLayout mTabLayout;
 
     @Nullable
     @Override
@@ -28,13 +33,26 @@ public class ConfigureOrderMenu extends Fragment {
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mViewPager.setAdapter(new CategoryTab(this.getChildFragmentManager()));
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
+        mTabLayout.setupWithViewPager(mViewPager,true);
     }
 
+    /*@Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.add(0,R.id.menu_update_category,0,R.string.menu_update_category);
+        menuItem.setIcon(R.drawable.ic_edit);
+
+        MenuItemCompat.setShowAsAction(menuItem,MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+
+        super.onPrepareOptionsMenu(menu);
+    }*/
+
     public void dataSetChanged() {
-        CategoryTab categoryTab = (CategoryTab) mViewPager.getAdapter();
-        categoryTab.notifyDataSetChanged();
+        mViewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    public int getCurrentCategory(){
+        return mViewPager.getCurrentItem();
     }
 
     public class CategoryTab extends FragmentStatePagerAdapter{

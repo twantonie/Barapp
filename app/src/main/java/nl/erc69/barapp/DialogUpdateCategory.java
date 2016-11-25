@@ -15,14 +15,13 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class DialogUpdateItem extends DialogFragment {
-    private int mCategoryPosition;
-    private int mItemPosition;
 
-    private Item item;
+public class DialogUpdateCategory extends DialogFragment {
+    private int mCategoryPosition;
+
+    private Category mCategory;
 
     private EditText ETName;
-    private EditText ETPrice;
 
     DatabaseReference mDatabase;
 
@@ -33,10 +32,9 @@ public class DialogUpdateItem extends DialogFragment {
         Bundle bundle = getArguments();
 
         mCategoryPosition = bundle.getInt(Category.CATEGORY_POSITION);
-        mItemPosition = bundle.getInt(Category.ITEM_POSITION);
+        mCategory = Category.CATEGORIES_POS.get(mCategoryPosition);
 
-        item = Category.CATEGORIES_POS.get(mCategoryPosition).ITEMS_POS.get(mItemPosition);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId()).child(Category.ITEMS_FB).child(item.getId());
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).child(Category.CATEGORIES_POS.get(mCategoryPosition).getId());
     }
 
     @NonNull
@@ -46,20 +44,19 @@ public class DialogUpdateItem extends DialogFragment {
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        View view = layoutInflater.inflate(R.layout.dialog_item,null);
+        View view = layoutInflater.inflate(R.layout.dialog_category,null);
 
-        ETName = (EditText) view.findViewById(R.id.update_item_name);
-        ETName.setText(item.getName());
-        ETPrice = (EditText) view.findViewById(R.id.update_item_price);
-        ETPrice.setText(String.valueOf(item.getPrice()));
+        ETName = (EditText) view.findViewById(R.id.update_category_name);
+        ETName.setText(mCategory.getName());
 
-        String title = "Update " + item.getName();
+
+        String title = "Update " + mCategory.getName();
 
         builder.setView(view)
                 .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteItem();
+                        deleteCategory();
                         dismiss();
                     }
                 })
@@ -70,7 +67,7 @@ public class DialogUpdateItem extends DialogFragment {
                         dismiss();
                     }
                 })
-        .setTitle(title);
+                .setTitle(title);
 
         return builder.create();
     }
@@ -81,31 +78,25 @@ public class DialogUpdateItem extends DialogFragment {
             updateName(name);
         else
             Toast.makeText(getActivity(),"Enter Name",Toast.LENGTH_SHORT).show();
-
-        String sPrice = ETPrice.getText().toString();
-        if(!sPrice.matches(""))
-            updatePrice(Double.parseDouble(sPrice));
-        else
-            Toast.makeText(getActivity(),"Enter Price",Toast.LENGTH_SHORT).show();
     }
 
     private void updateName(String name){
-        if (!name.equals(item.getName())){
-            item.setName(name);
+        if (!name.equals(mCategory.getName())){
+            mCategory.setName(name);
             mDatabase.child("name").setValue(name);
         }
+
+        dataSetChanged();
     }
 
-    private void updatePrice(double price){
-        if (price != item.getPrice()){
-            item.setPrice(price);
-            mDatabase.child("price").setValue(price);
-        }
+
+    private void deleteCategory(){
+        Category.removeCategory(mCategoryPosition);
+
+        dataSetChanged();
     }
 
-    private void deleteItem(){
-        Category.CATEGORIES_POS.get(mCategoryPosition).removeItem(mItemPosition);
-
+    private void dataSetChanged(){
         ((MainActivity)getActivity()).configureOrderMenuDataSetChanged();
     }
 }
