@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,6 +24,12 @@
             <FrameLayout
                 android:id="@+id/order_grid_fragment"
                 android:layout_weight="2"
+                android:layout_width="0px"
+                android:layout_height="match_parent"/>
+
+            <FrameLayout
+                android:id="@+id/order_receipt_fragment"
+                android:layout_weight="1"
                 android:layout_width="0px"
                 android:layout_height="match_parent"/>
 

@@ -15,20 +15,6 @@ import android.widget.TextView;
 
 public class OrderReceipt extends Fragment {
 
-    public Receipt currentReceipt = new Receipt();
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        int categoryPosition = getArguments().getInt(Category.CATEGORY_POSITION);
-        int itemPosition = getArguments().getInt(Category.ITEM_POSITION);
-        int orderAmount = getArguments().getInt(Receipt.ORDER_AMOUNT);
-
-        currentReceipt.addLine(categoryPosition,itemPosition,orderAmount);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,49 +24,46 @@ public class OrderReceipt extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Receipt.Line line = currentReceipt.LINES.get(position);
+                Receipt.Line line = Receipt.currentOrderReceipt.LINES.get(position);
                 ((MainActivity) getActivity()).orderItemSelected(line.getCategoryPosition(), line.getItemPosition(), position, line.getOrderAmount());
             }
         });
         listView.setAdapter(new ListItemAdapter());
 
         TextView textView = (TextView) view.findViewById(R.id.order_receipt_total);
-        textView.setText( String.valueOf(currentReceipt.getTotal()));
+        textView.setText( String.valueOf(Receipt.currentOrderReceipt.getTotal()));
 
         textView = (TextView) view.findViewById(R.id.order_receipt_date);
-        textView.setText(currentReceipt.getParsedDate());
+        textView.setText(Receipt.currentOrderReceipt.getParsedDate());
 
         textView = (TextView) view.findViewById(R.id.order_receipt_time);
-        textView.setText(currentReceipt.getParsedTime()+" ");
+        textView.setText(Receipt.currentOrderReceipt.getParsedTime()+" ");
 
         return view;
     }
 
-    public void addLineReceipt(int categoryPosition,int itemPosition,int amount){
-        currentReceipt.addLine(categoryPosition,itemPosition,amount);
-        dataSetChanged();
-    }
 
     public void updateLineReceipt(int linePosition,int orderAmount) {
-        if (orderAmount!=currentReceipt.LINES.get(linePosition).getOrderAmount()) {
-            currentReceipt.LINES.get(linePosition).setOrderAmount(orderAmount);
+        if (orderAmount!=Receipt.currentOrderReceipt.LINES.get(linePosition).getOrderAmount()) {
+            Receipt.currentOrderReceipt.LINES.get(linePosition).setOrderAmount(orderAmount);
             dataSetChanged();
         }
     }
 
     public void deleteLineReceipt(int linePosition){
-        if (currentReceipt.LINES.size() > 1){
-            currentReceipt.LINES.remove(linePosition);
+        if (Receipt.currentOrderReceipt.LINES.size() > 1){
+            Receipt.currentOrderReceipt.LINES.remove(linePosition);
             dataSetChanged();
         } else{
+            Receipt.currentOrderReceipt = null;
             getActivity().getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).remove(this).commit();
         }
 
     }
 
-    private void dataSetChanged(){
+    public void dataSetChanged(){
         TextView textView = (TextView) getView().findViewById(R.id.order_receipt_total);
-        textView.setText( String.valueOf(currentReceipt.getTotal()));
+        textView.setText( String.valueOf(Receipt.currentOrderReceipt.getTotal()));
 
         ListView listView = (ListView) getView().findViewById(R.id.order_receipt_list);
         ListItemAdapter listItemAdapter = (ListItemAdapter) listView.getAdapter();
@@ -90,10 +73,10 @@ public class OrderReceipt extends Fragment {
 
     public class ListItemAdapter extends BaseAdapter {
 
-        public int getCount() {return currentReceipt.LINES.size();}
+        public int getCount() {return Receipt.currentOrderReceipt.LINES.size();}
 
         public Receipt.Line getItem(int position) {
-            return currentReceipt.LINES.get(position);
+            return Receipt.currentOrderReceipt.LINES.get(position);
         }
 
         public long getItemId(int position) {
@@ -105,7 +88,7 @@ public class OrderReceipt extends Fragment {
             if (view == null){
                 view = getActivity().getLayoutInflater().inflate(R.layout.order_receipt_item, viewGroup, false);
             }
-            Receipt.Line line = currentReceipt.LINES.get(position);
+            Receipt.Line line = Receipt.currentOrderReceipt.LINES.get(position);
 
             TextView textView = (TextView) view.findViewById(R.id.order_receipt_item_amount);
             textView.setText(String.valueOf(line.getOrderAmount()));

@@ -15,6 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 
 public class MainActivity extends AppCompatActivity implements PlusOneFragment.OnFragmentInteractionListener {
@@ -26,14 +30,15 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String DIALOG = "dialog";
+    private String RECEIPT_TAG = "receipt_tag";
 
     private boolean editCategory = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        /*if (getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);*/
 
 
         super.onCreate(savedInstanceState);
@@ -62,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
             getSupportFragmentManager().beginTransaction().replace(R.id.order_grid_fragment,new OrderMenu()).commit();
             setTitle(R.string.order_menu);
         }
+
+
     }
 
     @Override
@@ -69,6 +76,15 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+
+        if (Receipt.currentOrderReceipt != null){
+            if (findViewById(R.id.order_receipt_fragment) != null){
+                getSupportFragmentManager().beginTransaction().replace(R.id.order_receipt_fragment,new OrderReceipt(),RECEIPT_TAG).commit();
+                findViewById(R.id.receipt).setVisibility(View.GONE);
+            }
+            if (findViewById(R.id.receipt).getVisibility()==View.GONE)
+                addReceiptButton();
+        }
     }
 
     @Override
@@ -141,14 +157,6 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         invalidateOptionsMenu();
     }
 
-    private void addEditButton(){
-        Menu menu = mToolbar.getMenu();
-        MenuItem menuItem = menu.add(0,R.id.menu_update_category,0,R.string.menu_update_category);
-        menuItem.setIcon(R.drawable.ic_edit);
-
-        MenuItemCompat.setShowAsAction(menuItem,MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-    }
-
     public void orderItemSelected(int categoryPosition,int itemPosition){
         Bundle bundle = lookupItemBundle(categoryPosition,itemPosition);
         OrderItemSelectedDialog fragment = new OrderItemSelectedDialog();
@@ -169,30 +177,62 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
 
     public void addLineReceipt(int categoryPosition,int itemPosition,int orderAmount){
-        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
+        if (Receipt.currentOrderReceipt == null)
+            Receipt.currentOrderReceipt = new Receipt();
 
-        if (orderReceipt == null){
-            Bundle bundle = lookupItemBundle(categoryPosition,itemPosition);
-            bundle.putInt(Receipt.ORDER_AMOUNT,orderAmount);
+        Receipt.currentOrderReceipt.addLine(categoryPosition,itemPosition,orderAmount);
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            orderReceipt = new OrderReceipt();
-            orderReceipt.setArguments(bundle);
-            transaction.replace(R.id.order_receipt_fragment,orderReceipt);
-            transaction.commit();
-        } else {
-            orderReceipt.addLineReceipt(categoryPosition,itemPosition,orderAmount);
+        if (findViewById(R.id.order_receipt_fragment) != null){
+
+            OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
+
+            if (orderReceipt == null){
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                orderReceipt = new OrderReceipt();
+                transaction.replace(R.id.order_receipt_fragment,orderReceipt,RECEIPT_TAG);
+                transaction.commit();
+            } else{
+                orderReceipt.dataSetChanged();
+            }
+        }else{
+            addReceiptButton();
+        }
+    }
+
+    private void addReceiptButton(){
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.receipt);
+        if (floatingActionButton.getVisibility()==View.GONE) {
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    OrderReceipt orderReceipt = new OrderReceipt();
+                    transaction.add(R.id.order_grid_fragment,orderReceipt,RECEIPT_TAG);
+                    transaction.addToBackStack("Receipt");
+                    transaction.commit();
+                }
+            });
         }
     }
 
     public void updateLineReceipt(int linePosition,int orderAmount){
-        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
-        orderReceipt.updateLineReceipt(linePosition,orderAmount);
+        if (orderAmount!=Receipt.currentOrderReceipt.LINES.get(linePosition).getOrderAmount()) {
+            Receipt.currentOrderReceipt.LINES.get(linePosition).setOrderAmount(orderAmount);
+            ((OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG)).dataSetChanged();
+        }
     }
 
     public void deleteLineReceipt(int linePosition){
-        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentById(R.id.order_receipt_fragment);
-        orderReceipt.deleteLineReceipt(linePosition);
+        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG);
+        if (Receipt.currentOrderReceipt.LINES.size() > 1){
+            Receipt.currentOrderReceipt.LINES.remove(linePosition);
+            orderReceipt.dataSetChanged();
+        } else{
+            Receipt.currentOrderReceipt = null;
+            getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).remove(orderReceipt).commit();
+            findViewById(R.id.receipt).setVisibility(View.GONE);
+        }
     }
 
     private Bundle lookupItemBundle(int categoryPosition, int itemPosition){

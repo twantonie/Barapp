@@ -6,6 +6,8 @@ import java.util.StringTokenizer;
 
 public class Receipt {
 
+    public static Receipt currentOrderReceipt;
+
     public ArrayList<Line> LINES = new ArrayList<Line>();
     private final Calendar calendar;
 
