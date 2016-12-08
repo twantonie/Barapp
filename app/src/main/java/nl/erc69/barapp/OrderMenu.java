@@ -23,20 +23,55 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 
 public class OrderMenu extends Fragment {
 
     private ViewPager mViewPager;
 
+    public static final String SHOW_FAB = "showFab";
+    private boolean showFAB;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+            showFAB = bundle.getBoolean(SHOW_FAB,false);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.order_menu, container, false);
+        View view = inflater.inflate(R.layout.order_menu, container, false);
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.receipt);
+        if (showFAB){
+            floatingActionButton.setVisibility(View.VISIBLE);
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    OrderReceipt orderReceipt = new OrderReceipt();
+                    transaction.add(R.id.order_grid_fragment,orderReceipt,MainActivity.RECEIPT_TAG);
+                    transaction.addToBackStack("Receipt");
+                    transaction.commit();
+                }
+            });
+        }else {
+            floatingActionButton.setVisibility(View.GONE);
+        }
+
+
+        return view;
     }
 
     @Override

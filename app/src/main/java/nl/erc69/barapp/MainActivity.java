@@ -30,9 +30,11 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String DIALOG = "dialog";
-    private String RECEIPT_TAG = "receipt_tag";
+    public static String RECEIPT_TAG = "receipt_tag";
 
     private boolean editCategory = false;
+
+    private boolean showFAB;
 
 
     @Override
@@ -80,10 +82,11 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         if (Receipt.currentOrderReceipt != null){
             if (findViewById(R.id.order_receipt_fragment) != null){
                 getSupportFragmentManager().beginTransaction().replace(R.id.order_receipt_fragment,new OrderReceipt(),RECEIPT_TAG).commit();
-                findViewById(R.id.receipt).setVisibility(View.GONE);
+                setFabButton(false);
+            } else{
+                setFabButton(true);
             }
-            if (findViewById(R.id.receipt).getVisibility()==View.GONE)
-                addReceiptButton();
+
         }
     }
 
@@ -132,11 +135,13 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         // Create a new fragment and specify the planet to show based on position
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
+        Bundle bundle = new Bundle();
         editCategory = false;
 
         switch (menuItem.getItemId()){
             case R.id.nav_first_fragment:
                 fragment = new OrderMenu();
+                bundle.putBoolean(OrderMenu.SHOW_FAB,showFAB);
                 break;
             case R.id.nav_second_fragment:
                 fragment = new ConfigureOrderMenu();
@@ -147,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
                 break;
         }
 
+        fragment.setArguments(bundle);
         transaction.replace(R.id.order_grid_fragment, fragment);
         transaction.commit();
 
@@ -195,7 +201,31 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
                 orderReceipt.dataSetChanged();
             }
         }else{
-            addReceiptButton();
+            setFabButton(true);
+        }
+    }
+
+    public void setFabButton(boolean show){
+        if (show != showFAB){
+            showFAB = show;
+
+            FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.receipt);
+
+            if (showFAB){
+                floatingActionButton.setVisibility(View.VISIBLE);
+                floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        OrderReceipt orderReceipt = new OrderReceipt();
+                        transaction.add(R.id.order_grid_fragment,orderReceipt,RECEIPT_TAG);
+                        transaction.addToBackStack("Receipt");
+                        transaction.commit();
+                    }
+                });
+            } else {
+                floatingActionButton.setVisibility(View.GONE);
+            }
         }
     }
 
