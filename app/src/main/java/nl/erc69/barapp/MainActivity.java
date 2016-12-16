@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
         if (editCategory){
             MenuItem menuItem = menu.add(0,R.id.menu_update_category,0,R.string.menu_update_category);
             menuItem.setIcon(R.drawable.ic_edit);

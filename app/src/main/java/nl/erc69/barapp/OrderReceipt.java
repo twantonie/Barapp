@@ -42,25 +42,6 @@ public class OrderReceipt extends Fragment {
         return view;
     }
 
-
-    public void updateLineReceipt(int linePosition,int orderAmount) {
-        if (orderAmount!=Receipt.currentOrderReceipt.LINES.get(linePosition).getOrderAmount()) {
-            Receipt.currentOrderReceipt.LINES.get(linePosition).setOrderAmount(orderAmount);
-            dataSetChanged();
-        }
-    }
-
-    public void deleteLineReceipt(int linePosition){
-        if (Receipt.currentOrderReceipt.LINES.size() > 1){
-            Receipt.currentOrderReceipt.LINES.remove(linePosition);
-            dataSetChanged();
-        } else{
-            Receipt.currentOrderReceipt = null;
-            getActivity().getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).remove(this).commit();
-        }
-
-    }
-
     public void dataSetChanged(){
         TextView textView = (TextView) getView().findViewById(R.id.order_receipt_total);
         textView.setText( String.valueOf(Receipt.currentOrderReceipt.getTotal()));
