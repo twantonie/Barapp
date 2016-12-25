@@ -1,5 +1,6 @@
 package nl.erc69.barapp;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String DIALOG = "dialog";
+    public static final String PAYMENT_FRAGMENT = "payment_fragment";
     public static String RECEIPT_TAG = "receipt_tag";
 
     private boolean editCategory = false;
@@ -39,10 +41,6 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /*if (getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);*/
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -301,6 +299,25 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         fragment.show(getSupportFragmentManager(),DIALOG);
     }
 
+    public void choosePaymentMethod(){
+        DialogChoosePaymentMethod fragment = new DialogChoosePaymentMethod();
+        fragment.show(getSupportFragmentManager(),DIALOG);
+    }
+
+    /*public void startPinPayment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        PinFragment pinFragment = new PinFragment();
+        transaction.add(R.id.order_grid_fragment,pinFragment,MainActivity.PAYMENT_FRAGMENT);
+        transaction.addToBackStack("Payment");
+        transaction.commit();
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+    }
 
     public void configureOrderMenuDataSetChanged(){
         ((ConfigureOrderMenu) getSupportFragmentManager().findFragmentById(R.id.order_grid_fragment)).dataSetChanged();

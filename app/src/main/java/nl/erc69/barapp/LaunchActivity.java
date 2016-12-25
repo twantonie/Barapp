@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.payleven.payment.api.PaylevenApi;
 
 public class LaunchActivity extends AppCompatActivity {
 
@@ -32,6 +33,8 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void createOrderItems(){
+        PaylevenApi.configure(getString(R.string.api_key));
+
         FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

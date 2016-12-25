@@ -13,5 +13,19 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string-array name="payment_options">
+        <item>Cash</item>
+        <item>Pin</item>
+        <item>Tab</item>
+    </string-array>
+    <string name="payment_options_title">Payment Options</string>
+
+    <string name="login_info">Log-in Info:</string>
+    <string name="email">E-Mail</string>
+    <string name="email_payleven">twonnie@live.nl</string>
+    <string name="password">Password</string>
+    <string name="password_payleven">barapp69</string>
+    <string name="start_payment">Start Pin Payment</string>
+
 
 </resources>

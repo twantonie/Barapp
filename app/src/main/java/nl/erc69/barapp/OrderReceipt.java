@@ -12,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 
 public class OrderReceipt extends Fragment {
 
@@ -38,6 +40,14 @@ public class OrderReceipt extends Fragment {
 
         textView = (TextView) view.findViewById(R.id.order_receipt_time);
         textView.setText(Receipt.currentOrderReceipt.getParsedTime()+" ");
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.pay);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).choosePaymentMethod();
+            }
+        });
 
         return view;
     }
