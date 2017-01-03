@@ -1,11 +1,11 @@
 package nl.erc69.barapp;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 
 public class MainActivity extends AppCompatActivity implements PlusOneFragment.OnFragmentInteractionListener {
@@ -51,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R.string.drawer_open,R.string.drawer_close);
+        mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_back);
+        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSupportFragmentManager().popBackStack();
+            }
+        });
 
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -63,10 +69,21 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+
+
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.order_grid_fragment,new OrderMenu()).commit();
             setTitle(R.string.order_menu);
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                shouldDisplayHomeUp();
+            }
+        });
+
+
 
 
     }
@@ -160,6 +177,11 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
         invalidateOptionsMenu();
+    }
+
+    private void shouldDisplayHomeUp(){
+        boolean canBack = getSupportFragmentManager().getBackStackEntryCount()>0;
+        mDrawerToggle.setDrawerIndicatorEnabled(!canBack);
     }
 
     public void orderItemSelected(int categoryPosition,int itemPosition){
