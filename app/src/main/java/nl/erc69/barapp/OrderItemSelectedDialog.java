@@ -51,7 +51,10 @@ public class OrderItemSelectedDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         orderAmount = mNumberPicker.getValue();
-                        ((MainActivity) getActivity()).addLineReceipt(categoryPosition,itemPosition, orderAmount);
+                        ((MainActivity) getActivity()).addLineReceipt(
+                                Category.CATEGORIES_POS.get(categoryPosition).getId(),
+                                Category.CATEGORIES_POS.get(categoryPosition).ITEMS_POS.get(itemPosition).getId(),
+                                orderAmount);
                         dismiss();
                     }
                 })

@@ -3,7 +3,6 @@ package nl.erc69.barapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +25,12 @@ public class OrderReceipt extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Receipt.Line line = Receipt.currentOrderReceipt.LINES.get(position);
-                ((MainActivity) getActivity()).orderItemSelected(line.getCategoryPosition(), line.getItemPosition(), position, line.getOrderAmount());
+                Receipt.Line line = Receipt.currentOrderReceipt.getLine(position);
+                Category category = Category.CATEGORIES_ID.get(line.getCategoryId());
+                ((MainActivity) getActivity()).orderItemSelected(
+                        category.getPosition(),
+                        category.ITEMS_ID.get(line.getItemId()).getPosition(),
+                        position, line.getOrderAmount());
             }
         });
         listView.setAdapter(new ListItemAdapter());
@@ -36,10 +39,10 @@ public class OrderReceipt extends Fragment {
         textView.setText( String.valueOf(Receipt.currentOrderReceipt.getTotal()));
 
         textView = (TextView) view.findViewById(R.id.order_receipt_date);
-        textView.setText(Receipt.currentOrderReceipt.getParsedDate());
+        textView.setText(Receipt.currentOrderReceipt.getDate());
 
         textView = (TextView) view.findViewById(R.id.order_receipt_time);
-        textView.setText(Receipt.currentOrderReceipt.getParsedTime()+" ");
+        textView.setText(Receipt.currentOrderReceipt.getTime()+" ");
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.pay);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -64,10 +67,10 @@ public class OrderReceipt extends Fragment {
 
     public class ListItemAdapter extends BaseAdapter {
 
-        public int getCount() {return Receipt.currentOrderReceipt.LINES.size();}
+        public int getCount() {return Receipt.currentOrderReceipt.getLinesSize();}
 
         public Receipt.Line getItem(int position) {
-            return Receipt.currentOrderReceipt.LINES.get(position);
+            return Receipt.currentOrderReceipt.getLine(position);
         }
 
         public long getItemId(int position) {
@@ -79,7 +82,7 @@ public class OrderReceipt extends Fragment {
             if (view == null){
                 view = getActivity().getLayoutInflater().inflate(R.layout.order_receipt_item, viewGroup, false);
             }
-            Receipt.Line line = Receipt.currentOrderReceipt.LINES.get(position);
+            Receipt.Line line = Receipt.currentOrderReceipt.getLine(position);
 
             TextView textView = (TextView) view.findViewById(R.id.order_receipt_item_amount);
             textView.setText(String.valueOf(line.getOrderAmount()));

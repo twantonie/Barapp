@@ -17,8 +17,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.payleven.payment.api.ApiPaymentCompletedStatus;
+import com.payleven.payment.api.ApiSalesHistoryCompletedStatus;
+import com.payleven.payment.api.ApiTransactionDetailsCompletedStatus;
+import com.payleven.payment.api.PaylevenApi;
+import com.payleven.payment.api.PaylevenResponseListener;
+import com.payleven.payment.api.TransactionRequest;
+
+import java.util.Map;
+
+import static com.payleven.payment.api.ApiPaymentCompletedStatus.*;
 
 
 public class MainActivity extends AppCompatActivity implements PlusOneFragment.OnFragmentInteractionListener {
@@ -146,6 +157,40 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        PaylevenApi.handleIntent(requestCode, data, new PaylevenResponseListener() {
+            @Override
+            public void onOpenTransactionDetailsFinished(String s, Map<String, String> map, ApiTransactionDetailsCompletedStatus apiTransactionDetailsCompletedStatus) {
+
+            }
+
+            @Override
+            public void onPaymentFinished(String s, TransactionRequest transactionRequest, Map<String, String> map, ApiPaymentCompletedStatus apiPaymentCompletedStatus) {
+                switch (apiPaymentCompletedStatus){
+                    case SUCCESS:
+                        //Handle Payment
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(),apiPaymentCompletedStatus.name(),Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+
+            @Override
+            public void onOpenSalesHistoryFinished(ApiSalesHistoryCompletedStatus apiSalesHistoryCompletedStatus) {
+
+            }
+
+            @Override
+            public void onNoPaylevenResponse(Intent intent) {
+
+            }
+        });
+    }
+
     /** Swaps fragments in the main content view */
     private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the planet to show based on position
@@ -203,11 +248,11 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     }
 
 
-    public void addLineReceipt(int categoryPosition,int itemPosition,int orderAmount){
+    public void addLineReceipt(String categoryId, String itemId, int orderAmount){
         if (Receipt.currentOrderReceipt == null)
-            Receipt.currentOrderReceipt = new Receipt();
+            Receipt.NewCurrentReceipt();
 
-        Receipt.currentOrderReceipt.addLine(categoryPosition,itemPosition,orderAmount);
+        Receipt.currentOrderReceipt.addLine(categoryId, itemId, orderAmount);
 
         if (findViewById(R.id.order_receipt_fragment) != null){
 
@@ -226,7 +271,25 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
         }
     }
 
-    public void setFabButton(boolean show){
+    public void updateLineReceipt(int linePosition,int orderAmount){
+        if (orderAmount!=Receipt.currentOrderReceipt.getLine(linePosition).getOrderAmount()) {
+            Receipt.currentOrderReceipt.getLine(linePosition).setOrderAmount(orderAmount);
+            ((OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG)).dataSetChanged();
+        }
+    }
+
+    public void deleteLineReceipt(int linePosition){
+        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG);
+
+        if (Receipt.currentOrderReceipt.removeLine(linePosition)){
+            getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).remove(orderReceipt).commit();
+            setFabButton(false);
+        }else {
+            orderReceipt.dataSetChanged();
+        }
+    }
+
+    private void setFabButton(boolean show){
         if (show != showFAB){
             showFAB = show;
 
@@ -247,42 +310,6 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
             } else {
                 floatingActionButton.setVisibility(View.GONE);
             }
-        }
-    }
-
-    private void addReceiptButton(){
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.receipt);
-        if (floatingActionButton.getVisibility()==View.GONE) {
-            floatingActionButton.setVisibility(View.VISIBLE);
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    OrderReceipt orderReceipt = new OrderReceipt();
-                    transaction.add(R.id.order_grid_fragment,orderReceipt,RECEIPT_TAG);
-                    transaction.addToBackStack("Receipt");
-                    transaction.commit();
-                }
-            });
-        }
-    }
-
-    public void updateLineReceipt(int linePosition,int orderAmount){
-        if (orderAmount!=Receipt.currentOrderReceipt.LINES.get(linePosition).getOrderAmount()) {
-            Receipt.currentOrderReceipt.LINES.get(linePosition).setOrderAmount(orderAmount);
-            ((OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG)).dataSetChanged();
-        }
-    }
-
-    public void deleteLineReceipt(int linePosition){
-        OrderReceipt orderReceipt = (OrderReceipt) getSupportFragmentManager().findFragmentByTag(RECEIPT_TAG);
-        if (Receipt.currentOrderReceipt.LINES.size() > 1){
-            Receipt.currentOrderReceipt.LINES.remove(linePosition);
-            orderReceipt.dataSetChanged();
-        } else{
-            Receipt.currentOrderReceipt = null;
-            getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).remove(orderReceipt).commit();
-            findViewById(R.id.receipt).setVisibility(View.GONE);
         }
     }
 
@@ -324,21 +351,6 @@ public class MainActivity extends AppCompatActivity implements PlusOneFragment.O
     public void choosePaymentMethod(){
         DialogChoosePaymentMethod fragment = new DialogChoosePaymentMethod();
         fragment.show(getSupportFragmentManager(),DIALOG);
-    }
-
-    /*public void startPinPayment(){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        PinFragment pinFragment = new PinFragment();
-        transaction.add(R.id.order_grid_fragment,pinFragment,MainActivity.PAYMENT_FRAGMENT);
-        transaction.addToBackStack("Payment");
-        transaction.commit();
-    }*/
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
     }
 
     public void configureOrderMenuDataSetChanged(){

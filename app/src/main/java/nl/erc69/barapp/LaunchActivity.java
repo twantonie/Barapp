@@ -35,12 +35,13 @@ public class LaunchActivity extends AppCompatActivity {
     private void createOrderItems(){
         PaylevenApi.configure(getString(R.string.api_key));
 
-        FirebaseDatabase.getInstance().getReference().child(Category.CATEGORIES_FB).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Category.clear();
                 String id;
-                for (DataSnapshot categoriesSnapshot: dataSnapshot.getChildren()){
+                DataSnapshot dataSnapshotCategory = dataSnapshot.child(Category.CATEGORIES_FB);
+                for (DataSnapshot categoriesSnapshot: dataSnapshotCategory.getChildren()){
                     Category category = categoriesSnapshot.getValue(Category.class);
                     id = category.getId();
                     Category.newCategory(category);
@@ -48,6 +49,9 @@ public class LaunchActivity extends AppCompatActivity {
                         Category.CATEGORIES_ID.get(id).addItem(itemsSnapshot.getValue(Item.class));
                     }
                 }
+
+                Receipt.CurrentReceiptFireBase(dataSnapshot.child(Receipt.RECEIPT_FB).child(Receipt.RECEIPT_CURRENT_FB));
+
                 hideProgressDialog();
                 startActivity(new Intent(LaunchActivity.this,MainActivity.class));
             }

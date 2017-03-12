@@ -33,7 +33,7 @@ public class PinFragment extends Fragment {
                 TransactionRequest request = builder.createTransactionRequest();
                 String orderId = UUID.randomUUID().toString();
 
-                PaylevenApi.initiatePayment(getActivity(),orderId,request);
+                PaylevenApi.initiatePayment(getActivity(), orderId, request);
 
             }
         });
