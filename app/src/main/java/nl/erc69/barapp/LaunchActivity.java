@@ -54,6 +54,7 @@ public class LaunchActivity extends AppCompatActivity {
 
                 hideProgressDialog();
                 startActivity(new Intent(LaunchActivity.this,MainActivity.class));
+                finish();
             }
 
             @Override
