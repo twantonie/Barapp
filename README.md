@@ -5,6 +5,7 @@ Barapp
 This app is still a work in progress, but basic functionality exists. 
 #### The features as of now are:
 - Fully functional GUI
+- Different interface depending on screen width
 - Add orders
 - View orders
 - Configure orders
