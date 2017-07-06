@@ -19,3 +19,7 @@ This app is still a work in progress, but basic functionality exists.
 - Integration with moneybird for easier administration
 
 #### Screenshots:
+
+![BarappLongScreen](https://github.com/twantonie/Barapp/blob/master/Barapp%20long%20screen.png)
+
+![BarappWideScreen](https://github.com/twantonie/Barapp/blob/master/Barapp%20wide%20screen.png)
